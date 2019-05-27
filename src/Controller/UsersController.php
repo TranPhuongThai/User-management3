@@ -2,7 +2,6 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-use Firebase\JWT\JWT;
 use Cake\Utility\Security;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Log\Log;
@@ -16,25 +15,30 @@ use Cake\Log\Log;
  */
 class UsersController extends AppController
 {
-
-    public $strangerAllowed = [
-        'logout',
-    ];
     public function initialize()
     {
         parent::initialize();
 
         $this->loadComponent('Role');
+        // log::info($this->Auth->user());
+        if (!empty($this->Auth->user()) && $this->request->action == 'login') {
+            $this->Flash->error(__('You have logged in, logout first please!'));
+            
+            return $this->redirect(['action' => 'viewDetail', $this->Auth->user('id')]);
+        }
+    
         
     }
 
     public function view()
     {   
-        $currentUser = $this->Auth->user();
         $this->paginate = [
             'contain' => ['Roles']
         ];
         $users = $this->paginate($this->Users);
+        foreach ($users as $user) {
+            unset($user['password']);
+        }
         $this->set(compact('users','currentUser'));
     }
 
@@ -50,6 +54,7 @@ class UsersController extends AppController
         $user = $this->Users->get($id, [
             'contain' => ['Roles']
         ]);
+        unset($user->password);
         $this->set('user', $user);
     }
 
@@ -123,6 +128,7 @@ class UsersController extends AppController
     }
 
     public function login() {
+
         if (!empty($this->request->getData())) {
             $user = $this->Auth->identify();
 
@@ -141,6 +147,11 @@ class UsersController extends AppController
 
     public function logout()
     {
+        if (empty($this->Auth->user())) {
+            $this->Flash->success('You have not logged in, login first please!');
+
+            return $this->redirect(['action' => 'login']);
+        }
         $this->Flash->success('You are now logged out.');
         return $this->redirect($this->Auth->logout());
     }

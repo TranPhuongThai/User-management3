@@ -69,7 +69,7 @@ class AppController extends Controller
             'checkAuthIn' => 'Controller.initialize',
         ]);
         $this->Session = $this->request->getSession();
-        $this->Auth->allow(['login']);
+        $this->Auth->allow(['login','logout']);
         /*
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
@@ -80,29 +80,29 @@ class AppController extends Controller
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        if (!in_array($this->request->action, $this->strangerAllowed)) {
+       
             if (!empty($this->Auth->user())) {
                 $role = $this->Auth->user('allowedActions');
 
-                if ($role !== 'all') {
+                if ($role !== 'all' && $this->request->action !== 'logout') {
                     $allow = $this->checkPermission($role);
                     
                     if (!$allow) {
-                        $this->Flash->error(__('You do not have permission for this'));
+                        $this->Flash->error(__('You do not have permission for this action'));
                         
-                        return $this->redirect(['controller' => 'Users', 'action' => 'viewDetail', 'id' => $this->Auth->user('id')]);
+                        return $this->redirect(['controller' => 'Users', 'action' => 'viewDetail', $this->Auth->user('id')]);
                     }
                 }
             }
-        }
     }
 
-    // public function beforeRender(Event $event)
-    // {
-    //     if (!empty($this->Auth->user())) {
-    //         $currentUser = $this->Auth->user();
-    //     }
-    // }
+    public function beforeRender(Event $event)
+    {
+        if (!empty($this->Auth->user())) {
+            $currentUser = $this->Auth->user();
+            $this->set(compact('currentUser'));
+        }
+    }
 
     public function checkPermission($role)
     {
@@ -120,12 +120,9 @@ class AppController extends Controller
 
             return false;
         }
-        else {
-
-            if (!in_array($permission['id'], $role)) {
-                
-                return false;
-            }
+        elseif (!in_array($permission['id'], $role)) {
+ 
+            return false;        
         }
 
         return true;
