@@ -1,0 +1,5 @@
+msgid "Action not allowed"
+msgstr "Action không cho phép truy cập"
+
+msgid "You do not have permission for this"
+msgstr "Bạn không có quyền truy cập action này"
