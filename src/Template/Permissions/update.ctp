@@ -23,7 +23,8 @@
         <?php
             echo $this->Form->control('name');
             echo $this->Form->control('controller');
-            echo $this->Form->control('status');
+            echo 'Status';
+            echo $this->Form->select('status',[0 => 'Inactive', 1 => 'Active']);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

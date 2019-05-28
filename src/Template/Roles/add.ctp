@@ -8,8 +8,6 @@
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Html->link(__('List Roles'), ['action' => 'view']) ?></li>
-        <li><?= $this->Html->link(__('List Users'), ['controller' => 'Users', 'action' => 'view']) ?></li>
-        <li><?= $this->Html->link(__('New User'), ['controller' => 'Users', 'action' => 'add']) ?></li>
     </ul>
 </nav>
 <div class="roles form large-9 medium-8 columns content">
@@ -19,7 +17,8 @@
         <?php
             echo $this->Form->control('name');
             echo $this->Form->control('allow_action_ids');
-            echo $this->Form->control('status');
+            echo 'Status';
+            echo $this->Form->select('status',[0 => 'Inactive', 1 => 'Active']);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

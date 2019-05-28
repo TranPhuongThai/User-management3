@@ -56,35 +56,29 @@ class UsersTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmptyString('id', 'create');
+            ->allowEmptyString('id', 'add');
 
         $validator
             ->scalar('user_code')
             ->maxLength('user_code', 50)
-            ->requirePresence('user_code', 'create')
-            ->allowEmptyString('user_code', false);
+            //->requirePresence('user_code', 'add')
+            ->allowEmptyString('user_code');
 
         $validator
-            ->scalar('username')
-            ->maxLength('username', 50)
-            ->requirePresence('username', 'create')
-            ->allowEmptyString('username', false);
-
-        $validator
-            ->scalar('name')
-            ->maxLength('name', 255)
-            ->requirePresence('name', 'create')
-            ->allowEmptyString('name', false);
+            ->scalar('full_name')
+            ->maxLength('full_name', 255)
+            ->requirePresence('full_name', 'add')
+            ->allowEmptyString('full_name', false);
 
         $validator
             ->email('email')
-            ->requirePresence('email', 'create')
+            ->requirePresence('email', 'add')
             ->allowEmptyString('email', false);
 
         $validator
             ->scalar('password')
             ->maxLength('password', 255)
-            ->requirePresence('password', 'create')
+            ->requirePresence('password', 'add')
             ->allowEmptyString('password', false);
 
         $validator
@@ -93,7 +87,7 @@ class UsersTable extends Table
             ->allowEmptyString('address');
 
         $validator
-            ->requirePresence('status', 'create')
+            ->requirePresence('status', 'add')
             ->allowEmptyString('status', false);
 
         $validator
@@ -117,7 +111,6 @@ class UsersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['username']));
         $rules->add($rules->isUnique(['email']));
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
 

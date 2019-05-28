@@ -23,6 +23,8 @@ use Cake\Event\Event;
  */
 class ErrorController extends AppController
 {
+    public $Auth = null;
+
     /**
      * Initialization hook method.
      *
@@ -30,6 +32,7 @@ class ErrorController extends AppController
      */
     public function initialize()
     {
+        
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
         ]);

@@ -8,8 +8,6 @@
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Html->link(__('List Users'), ['action' => 'view']) ?></li>
-        <li><?= $this->Html->link(__('List Roles'), ['controller' => 'Roles', 'action' => 'view']) ?></li>
-        <li><?= $this->Html->link(__('New Role'), ['controller' => 'Roles', 'action' => 'add']) ?></li>
     </ul>
 </nav>
 <div class="users form large-9 medium-8 columns content">
@@ -17,15 +15,13 @@
     <fieldset>
         <legend><?= __('Add User') ?></legend>
         <?php
-            echo $this->Form->control('user_code');
             echo $this->Form->control('full_name');
             echo $this->Form->control('email');
             echo $this->Form->control('password');
             echo $this->Form->control('address');
             echo $this->Form->control('role_id', ['options' => $roles]);
-            echo $this->Form->control('status');
-            echo $this->Form->control('confirmation');
-            echo $this->Form->control('confirm_expired_time');
+            echo "Status";
+            echo $this->Form->select('status',[0 => 'Hoạt động', 1 => 'Không hoạt động']);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

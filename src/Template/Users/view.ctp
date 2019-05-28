@@ -8,8 +8,6 @@
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Html->link(__('New User'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Roles'), ['controller' => 'Roles', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Role'), ['controller' => 'Roles', 'action' => 'add']) ?></li>
     </ul>
 </nav>
 <div class="users index large-9 medium-8 columns content">
@@ -42,7 +40,11 @@
                 <td><?= h($user->email) ?></td>
                 <td><?= h($user->address) ?></td>
                 <td><?= $user->has('role') ? $this->Html->link($user->role->name, ['controller' => 'Roles', 'action' => 'view', $user->role->id]) : '' ?></td>
-                <td><?= $this->Number->format($user->status) ?></td>
+                <?php if ($user->status == 1) {?>
+                <td><?= "Active" ?></td>
+                <?php }else { ?>
+                <td><?= "Inactive" ?></td>
+                <?php } ?>
                 <td><?= h($user->confirmation) ?></td>
                 <td><?= h($user->confirm_expired_time) ?></td>
                 <td><?= h($user->created) ?></td>

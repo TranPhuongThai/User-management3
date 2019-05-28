@@ -18,7 +18,6 @@ use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
-use Cake\Controller\Component\AuthComponent;
 
 /**
  * Application Controller
@@ -84,7 +83,7 @@ class AppController extends Controller
             if (!empty($this->Auth->user())) {
                 $role = $this->Auth->user('allowedActions');
 
-                if ($role !== 'all' && $this->request->action !== 'logout') {
+                if ($role !== 'all' && $this->request->action !== 'logout' && $this->request->action !== 'changePassword') {
                     $allow = $this->checkPermission($role);
                     
                     if (!$allow) {

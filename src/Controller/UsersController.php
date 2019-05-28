@@ -20,14 +20,13 @@ class UsersController extends AppController
         parent::initialize();
 
         $this->loadComponent('Role');
+        $this->loadComponent('CheckInputs');
         // log::info($this->Auth->user());
         if (!empty($this->Auth->user()) && $this->request->action == 'login') {
-            $this->Flash->error(__('You have logged in, logout first please!'));
+            $this->Flash->error(__('An account have been logged in, logout first to sign in with another please.'));
             
             return $this->redirect(['action' => 'viewDetail', $this->Auth->user('id')]);
         }
-    
-        
     }
 
     public function view()
@@ -69,13 +68,18 @@ class UsersController extends AppController
 
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
+        
+            if ($this->Users->save($user)) {              
+                $user->user_code = "USER".$user->id;
+                
+                if ($this->Users->save($user)) {
+                    $this->Flash->success(__('The user has been saved.'));
 
-            if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
-
-                return $this->redirect(['action' => 'view']);
+                    return $this->redirect(['action' => 'view']);
+                }
             }
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+            
+            $this->Flash->error(__('User can not be saved'));
         }
         $roles = $this->Users->Roles->find('list', ['limit' => 200]);
         $this->set(compact('user', 'roles'));
@@ -103,6 +107,10 @@ class UsersController extends AppController
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
         $roles = $this->Users->Roles->find('list', ['limit' => 200]);
+        
+        if ($user->role_id != 1 || $user->role_id != 2) {
+            unset($user->role_id);
+        }
         $this->set(compact('user', 'roles'));
     }
 
@@ -153,6 +161,32 @@ class UsersController extends AppController
             return $this->redirect(['action' => 'login']);
         }
         $this->Flash->success('You are now logged out.');
+
         return $this->redirect($this->Auth->logout());
+    }
+
+    public function changePassword() 
+    {
+        if (!empty($this->request->getData())) 
+        {
+            $data = $this->request->getData();
+            $check = $this->CheckInputs->execute($data, 'old_password', 'new_password');
+
+            if (!$check) {
+                $this->Flash->error(__($this->CheckInputs->getMessage()));
+
+                return $this->redirect(['action' => 'changePassword']);
+            }
+
+            $user = $this->Users->find()->where(['id' => $this->Auth->user('id')])->select('password');
+
+            if (strlen($data['old_password'])) {
+                $hash = new DefaultPasswordHasher();
+    
+                if ($hash->hash($data['old_password']) == $user['password']) {
+                   
+                }
+            }
+        }
     }
 }
