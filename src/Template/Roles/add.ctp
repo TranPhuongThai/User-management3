@@ -16,7 +16,8 @@
         <legend><?= __('Add Role') ?></legend>
         <?php
             echo $this->Form->control('name');
-            echo $this->Form->control('allow_action_ids');
+            echo 'Permissions';
+            echo $this->Form->select('allow_action_ids', $permissions, ['multiple' => 'checkbox']);
             echo 'Status';
             echo $this->Form->select('status',[0 => 'Inactive', 1 => 'Active']);
         ?>

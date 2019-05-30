@@ -18,6 +18,7 @@
                 <th scope="col"><?= $this->Paginator->sort('id') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('name') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('controller') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('display_name') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('status') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('created') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
@@ -30,6 +31,7 @@
                 <td><?= $this->Number->format($permission->id) ?></td>
                 <td><?= h($permission->name) ?></td>
                 <td><?= h($permission->controller) ?></td>
+                <td><?= h($permission->display_name) ?></td>
                 <td><?= $this->Number->format($permission->status) ?></td>
                 <td><?= h($permission->created) ?></td>
                 <td><?= h($permission->modified) ?></td>

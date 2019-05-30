@@ -71,6 +71,9 @@ class PermissionsController extends AppController
 
             $permission = $this->Permissions->newEntity($data);
 
+            if (empty($permission->display_name)) {
+                $permission->display_name = 'default';
+            }
             if (!$this->Permissions->save($permission)) {
                 $this->Flash->error(__('Permission could not be created. Please, try again!'));
 
@@ -85,6 +88,7 @@ class PermissionsController extends AppController
                     
                     if (!empty($role)) {
                         $role['allow_action_ids'] = $role['allow_action_ids'].','.$permission->id;
+                        
                         if (!$this->Roles->save($role)) {
                             $this->Flash->error(__('Role '.$role['name'].' could not updated!'));
                         }
@@ -119,7 +123,6 @@ class PermissionsController extends AppController
      */
     public function update($id = null)
     {
-        log::info("ASDAS");
         $permission = $this->Permissions->get($id, [
             'contain' => []
         ]);

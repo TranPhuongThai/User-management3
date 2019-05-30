@@ -67,15 +67,23 @@ class UsersController extends AppController
         $user = $this->Users->newEntity();
 
         if ($this->request->is('post')) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
-        
+            $data = $this->request->getData();
+            $check = $this->CheckInputs->execute($data, ['password', 'email', 'role_id']);
+
+            if (!$check) {
+                $this->Flash->error(__($this->CheckInputs->getMessage()));
+
+                return $this->redirect(['action' => 'add']);
+            }
+            $user = $this->Users->patchEntity($user, $data);
+            
             if ($this->Users->save($user)) {              
                 $user->user_code = "USER".$user->id;
                 
                 if ($this->Users->save($user)) {
                     $this->Flash->success(__('The user has been saved.'));
 
-                    return $this->redirect(['action' => 'view']);
+                    return $this->redirect(['action' => 'viewDetail', $user->id]);
                 }
             }
             
@@ -170,7 +178,7 @@ class UsersController extends AppController
         if (!empty($this->request->getData())) 
         {
             $data = $this->request->getData();
-            $check = $this->CheckInputs->execute($data, 'old_password', 'new_password');
+            $check = $this->CheckInputs->execute($data, ['old_password', 'new_password']);
 
             if (!$check) {
                 $this->Flash->error(__($this->CheckInputs->getMessage()));
@@ -188,5 +196,38 @@ class UsersController extends AppController
                 }
             }
         }
+    }
+
+    public function register()
+    {
+        $user = $this->Users->newEntity();
+
+        if ($this->request->is('post')) {
+            $data = $this->request->getData();
+            $check = $this->CheckInputs->execute($data, ['password', 'email']);
+
+            if (!$check) {
+                $this->Flash->error(__($this->CheckInputs->getMessage()));
+
+                return $this->redirect(['action' => 'add']);
+            }
+            $user = $this->Users->patchEntity($user, $data);
+            $user->role_id = 3;
+            $user->status = 0;
+            
+            if ($this->Users->save($user)) {
+                $user->user_code = "USER".$user->id;
+                
+                
+                if ($this->Users->save($user)) {
+                    $this->Flash->success(__('Register successful.'));
+
+                    return $this->redirect(['action' => 'viewDetail', $user->id]);
+                }
+            }
+            
+            $this->Flash->error(__('User can not be saved'));
+        }
+        $this->set(compact('user'));
     }
 }

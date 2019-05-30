@@ -2,6 +2,7 @@
 namespace App\Controller;
 use Cake\Controller\Component\AuthComponent;
 use App\Controller\AppController;
+use Cake\Log\Log;
 
 /**
  * Roles Controller
@@ -17,6 +18,8 @@ class RolesController extends AppController
     public function initialize()
     {
         parent::initialize();
+
+        $this->loadComponent('CheckInputs');
     }
 
     /**
@@ -27,7 +30,7 @@ class RolesController extends AppController
     public function view()
     {
         $roles = $this->paginate($this->Roles);
-
+        
         $this->set(compact('roles'));
     }
 
@@ -40,11 +43,19 @@ class RolesController extends AppController
      */
     public function viewDetail($id = null)
     {
-        $role = $this->Roles->get($id, [
-            'contain' => ['Users']
-        ]);
+        $role = $this->Roles->get($id);
+        $permissions = null;
 
-        $this->set('role', $role);
+        if ($role->id != 0 && $role->id != 1) {
+            $permissionIds = explode(',', $role->allow_action_ids);
+            $permissionModel = $this->loadModel('Permissions');
+            foreach ($permissionIds as $permissionId) {
+                $permission = $permissionModel->findById($permissionId)->select(['display_name'])->first();
+                $permissions[] = $permission['display_name'];
+            }
+        }
+
+        $this->set(compact('role', 'permissions'));
     }
 
     /**
@@ -54,9 +65,17 @@ class RolesController extends AppController
      */
     public function add()
     {
-        if ($this->request->is('post')) {
+        if (!empty($this->request->getData())) {
+            $data = $this->request->getData();
+            $check = $this->CheckInputs->execute($data, ['name']);
+
+            if (!$check) {
+                $this->Flash->error(__($this->CheckInputs->getMessage()));
+
+                return $this->redirect(['action' => 'add']);
+            }
             $role = $this->Roles->newEntity();
-            $role = $this->Roles->patchEntity($role, $this->request->getData());
+            $role = $this->Roles->patchEntity($role, $data);
             if ($this->Roles->save($role)) {
                 $this->Flash->success(__('The role has been saved.'));
 
@@ -64,6 +83,12 @@ class RolesController extends AppController
             }
             $this->Flash->error(__('The role could not be saved. Please, try again.'));
         }
+        $permissionModel = $this->loadModel('Permissions');
+        $permissions = $permissionModel->find('list', [
+            'keyField' => 'id',
+            'valueField' => 'display_name'
+        ]);
+        $this->set(compact('permissions'));
     }
 
     /**
@@ -78,7 +103,7 @@ class RolesController extends AppController
         $role = $this->Roles->get($id, [
             'contain' => []
         ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
+        if (!empty($this->request->getData())) {
             $role = $this->Roles->patchEntity($role, $this->request->getData());
             if ($this->Roles->save($role)) {
                 $this->Flash->success(__('The role has been saved.'));

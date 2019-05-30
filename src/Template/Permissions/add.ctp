@@ -17,6 +17,7 @@ use Cake\Log\Log;
         <legend><?= __('Add Permission') ?></legend>
         <?php
             echo $this->Form->control('name');
+            echo $this->Form->control('display_name');
             echo $this->Form->control('controller');
             echo 'Status';
             echo $this->Form->select('status', [1 => 'On', 0 => 'Off']);

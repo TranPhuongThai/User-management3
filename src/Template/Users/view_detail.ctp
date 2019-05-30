@@ -29,23 +29,24 @@
             <th scope="row"><?= __('Email') ?></th>
             <td><?= h($user->email) ?></td>
         </tr>
-        <tr>
-            <th scope="row"><?= __('Role') ?></th>
-            <td><?= $user->has('role') ? $this->Html->link($user->role->name, ['controller' => 'Roles', 'action' => 'view', $user->role->id]) : '' ?></td>
-        </tr>
         <?php if($user->role->id == 1 || $user->role->id == 2) { ?> 
-        <tr>
-            <th scope="row"><?= __('Confirmation') ?></th>
-            <td><?= h($user->confirmation) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Confirm Expired Time') ?></th>
-            <td><?= h($user->confirm_expired_time) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Status') ?></th>
-            <td><?= $this->Number->format($user->status) ?></td>
-        </tr>
+            <tr>
+                <th scope="row"><?= __('Role') ?></th>
+                <td><?= $user->has('role') ? $this->Html->link($user->role->name, ['controller' => 'Roles', 'action' => 'view', $user->role->id]) : '' ?></td>
+            </tr>
+
+            <tr>
+                <th scope="row"><?= __('Confirmation') ?></th>
+                <td><?= h($user->confirmation) ?></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= __('Confirm Expired Time') ?></th>
+                <td><?= h($user->confirm_expired_time) ?></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= __('Status') ?></th>
+                <td><?= $this->Number->format($user->status) ?></td>
+            </tr>
         <?php } ?> 
         <tr>
             <th scope="row"><?= __('Created') ?></th>

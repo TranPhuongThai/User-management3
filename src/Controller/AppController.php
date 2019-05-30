@@ -68,7 +68,7 @@ class AppController extends Controller
             'checkAuthIn' => 'Controller.initialize',
         ]);
         $this->Session = $this->request->getSession();
-        $this->Auth->allow(['login','logout']);
+        $this->Auth->allow(['login', 'logout', 'register']);
         /*
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
@@ -79,7 +79,7 @@ class AppController extends Controller
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-       
+        
             if (!empty($this->Auth->user())) {
                 $role = $this->Auth->user('allowedActions');
 
